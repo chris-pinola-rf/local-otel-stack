@@ -5,6 +5,10 @@ exporters:
     endpoint: "jaeger:14250"
     tls:
       insecure: true
+  otlp:
+    endpoint: "promscale:9202"
+    tls:
+      insecure: true
 extensions:
   health_check: {}
   memory_ballast: {}
@@ -18,6 +22,12 @@ receivers:
   otlp:
     protocols:
       grpc: null
+  jaeger:
+    protocols:
+      grpc:
+      thrift_binary:
+      thrift_compact:
+      thrift_http:
 service:
   extensions:
   - health_check
@@ -26,8 +36,10 @@ service:
     traces:
       exporters:
       - jaeger
+      - otlp
       processors:
       - memory_limiter
       - batch
       receivers:
       - otlp
+      - jaeger
